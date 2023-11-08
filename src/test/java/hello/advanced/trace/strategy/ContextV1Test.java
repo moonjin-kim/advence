@@ -1,17 +1,18 @@
-package hello.advanced.trace.template;
+package hello.advanced.trace.strategy;
 
-import hello.advanced.trace.template.core.AbstractTemplate;
-import hello.advanced.trace.template.core.SubClassLogic1;
-import hello.advanced.trace.template.core.SubClassLogic2;
+import hello.advanced.trace.strategy.code.strategy.ContextV1;
+import hello.advanced.trace.strategy.code.strategy.Strategy;
+import hello.advanced.trace.strategy.code.strategy.StrategyLogic1;
+import hello.advanced.trace.strategy.code.strategy.StrategyLogic2;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @Slf4j
-public class TemplateMethodTest {
+public class ContextV1Test {
 
     @Test
-    void templateMethodV0(){
+    void strategyV0(){
         //given
         logic1();
         logic2();
@@ -40,40 +41,35 @@ public class TemplateMethodTest {
         log.info("resultTime={}",resultTime);
     }
 
-    /**
-     * 템플릿 메서드 패턴 적용
-     */
-    @Test
-    void templateMethodV1(){
-        //given
-        AbstractTemplate template1 = new SubClassLogic1();
-        template1.execute();
-        //when
-        AbstractTemplate template2 = new SubClassLogic2();
-        template2.execute();
-        //then
-    }
 
     @Test
-    void templateMethodV2(){
+    void strategyV1(){
         //given
-        AbstractTemplate template1 = new AbstractTemplate() {
-            @Override
-            protected void call() {
-                log.info("비즈니스 로직1 실행");
-            }
-        };
-        template1.execute();
+        StrategyLogic1 strategyLogic1 = new StrategyLogic1();
+        ContextV1 contextV1 = new ContextV1(strategyLogic1);
+        contextV1.execute();
 
-        AbstractTemplate template2 = new AbstractTemplate() {
-            @Override
-            protected void call() {
-                log.info("비즈니스 로직2 실행");
-            }
-        };
-        template2.execute();
+
+        StrategyLogic2 strategyLogic2 = new StrategyLogic2();
+        ContextV1 context2 = new ContextV1(strategyLogic2);
+        context2.execute();
         //when
 
         //then
     }
+
+
+    @Test
+    void strategyV2(){
+        //given
+        ContextV1 contextV1 = new ContextV1(() -> log.info("비즈니스 로직1 실행"));
+        contextV1.execute();
+
+        ContextV1 contextV2 = new ContextV1(() -> log.info("비즈니스 로직2 실행"));
+        contextV2.execute();
+        //when
+
+        //then
+    }
+
 }
